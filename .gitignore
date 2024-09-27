@@ -1,1 +1,4 @@
 .DS_Store
+*.wasm
+wasm_exec.js
+ebitengine_test*
