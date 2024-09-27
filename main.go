@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"image"
+	"image/color"
 	_ "image/png"
 	"log"
 
@@ -16,6 +17,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/audio/wav"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
+	"github.com/hajimehoshi/ebiten/v2/vector"
 )
 
 const (
@@ -37,9 +39,10 @@ var (
 )
 
 type Game struct {
-	count int
-	dx    float64
-	x     float64
+	count  int
+	dx     float64
+	x      float64
+	cursor [2]int
 }
 
 func NewGame() ebiten.Game {
@@ -63,6 +66,10 @@ func (g *Game) Update() error {
 	} else if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
 		return bytes.ErrTooLarge
 	}
+
+	mx, my := ebiten.CursorPosition()
+	g.cursor[0] = mx
+	g.cursor[1] = my
 
 	g.x += g.dx
 	g.count++
@@ -88,6 +95,9 @@ func (g *Game) Draw(screen *ebiten.Image) {
 		Source: silkscreenFont,
 		Size:   12,
 	}, op2)
+
+	vector.DrawFilledRect(screen, float32(g.cursor[0]-2.0), float32(g.cursor[1]-2.0), 5, 5, color.RGBA{0xFF, 0x00, 0x00, 0xff}, false)
+
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) {
